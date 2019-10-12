@@ -1,8 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"github.com/daisakuhazui/four-quadrants-go/backend"
+	"github.com/labstack/echo"
+)
 
 func main() {
-	name := "Jimmy"
-	fmt.Printf("私の名前は %s です", name)
+	e := echo.New()
+
+	backend.InitRoute(e)
 }
