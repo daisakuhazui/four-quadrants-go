@@ -16,7 +16,15 @@ func InitDB() {
 
 	// create table
 	_, execErr := db.Exec(
-		`CREATE TABLE IF NOT EXISTS "TASKS" ("ID" INTEGER PRIMARY KEY, "TITLE" STRING)`,
+		`CREATE TABLE IF NOT EXISTS "TASKS" (` +
+			`"ID" INTEGER PRIMARY KEY, ` +
+			`"NAME" STRING,` +
+			`"MEMO" STRING,` +
+			`"QUADRANT" INT,` +
+			`"COMPLETEFLAG" BOOL,` +
+			`"CREATEDAT" DATETIME,` +
+			`"UPDATEDAT" DATETIME` +
+			`)`,
 	)
 	if execErr != nil {
 		fmt.Println("Could not create table: %+v", execErr)
