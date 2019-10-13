@@ -7,11 +7,10 @@ import (
 )
 
 func InitDB() {
-	// connect database
-	db, connectErr := sql.Open("sqlite3", "./sqlite.db")
-	if connectErr != nil {
-		fmt.Println("Counld not open database: %+v", connectErr)
-		panic(connectErr)
+	// open database
+	db, openErr := OpenDB()
+	if openErr != nil {
+		panic(openErr)
 	}
 
 	// create table
@@ -30,4 +29,13 @@ func InitDB() {
 		fmt.Println("Could not create table: %+v", execErr)
 		panic(execErr)
 	}
+}
+
+func OpenDB() (*sql.DB, error) {
+	db, err := sql.Open("sqlite3", "./sqlite.db")
+	if err != nil {
+		fmt.Println("Unexpected error occured during open database: %+v", err)
+		return nil, err
+	}
+	return db, nil
 }
