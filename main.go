@@ -6,7 +6,10 @@ import (
 )
 
 func main() {
-	e := echo.New()
+	// initialize database
+	backend.InitDB()
 
+	// initialize routing
+	e := echo.New()
 	backend.InitRoute(e)
 }

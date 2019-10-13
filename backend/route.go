@@ -11,7 +11,10 @@ func InitRoute(e *echo.Echo) {
 	e.Use(middleware.Recover())
 
 	// routing
-	e.GET("/hello", handlerTasksGet)
+	e.GET("/task/:id", handlerTaskGet)
+	e.POST("/task/:id", handlerTaskPost)
+	e.PUT("/task/:id", handlerTaskPut)
+	e.DELETE("/task/:id", handlerTaskDelete)
 
 	// start server 8080 port
 	e.Logger.Fatal(e.Start(":8080"))
