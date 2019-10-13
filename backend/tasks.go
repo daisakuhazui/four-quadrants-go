@@ -7,6 +7,6 @@ import (
 	"github.com/labstack/echo"
 )
 
-func handlerTasksGet(c echo.Context) error {
+func handlerTaskGet(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"hello": "world"})
 }
