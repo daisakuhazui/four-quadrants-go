@@ -1,7 +1,7 @@
 package backend
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -17,7 +17,7 @@ func handlerTaskPost(c echo.Context) error {
 	// bind request
 	task := new(common.Task)
 	if err := c.Bind(task); err != nil {
-		fmt.Sprintln("Bad request: %+v", err)
+		log.Printf("Bad request: %+v", err)
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
@@ -36,10 +36,14 @@ func handlerTaskPost(c echo.Context) error {
 		time.Now(),
 		time.Now(),
 	)
+	if err != nil {
+		log.Printf("Could not insert task: %+v", err)
+		return c.JSON(http.StatusInternalServerError, err)
+	}
 
 	lastInsertID, err := result.LastInsertId()
 	if err != nil {
-		fmt.Sprintln("Could not get lastInserID: %+v", err)
+		log.Printf("Could not get lastInserID: %+v", err)
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 

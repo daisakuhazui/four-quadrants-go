@@ -2,8 +2,8 @@ package backend
 
 import (
 	"database/sql"
-	"fmt"
 	_ "github.com/mattn/go-sqlite3"
+	"log"
 )
 
 func InitDB() {
@@ -26,15 +26,15 @@ func InitDB() {
 			`)`,
 	)
 	if execErr != nil {
-		fmt.Println("Could not create table: %+v", execErr)
+		log.Printf("Could not create table: %+v", execErr)
 		panic(execErr)
 	}
 }
 
 func OpenDB() (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", "./sqlite.db")
+	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	if err != nil {
-		fmt.Println("Unexpected error occured during open database: %+v", err)
+		log.Printf("Unexpected error occured during open database: %+v", err)
 		return nil, err
 	}
 	return db, nil
