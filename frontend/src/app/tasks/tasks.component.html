@@ -1,1 +1,19 @@
-<p>tasks works!</p>
+<h2>新規タスク登録</h2>
+
+<form [formGroup]="newTaskForm">
+  <div>
+    <label>タスク名</label>
+    <input formControlName="name">
+  </div>
+  <div>
+    <label>メモ</label>
+    <input formControlName="memo">
+  </div>
+  <div>
+    <label>象限</label>
+    <span *ngFor="let quadrant of quadrants">
+      <input type="radio" formControlName="quadrant" [value]="quadrant">{{quadrant}}
+    </span>
+  </div>
+  <button (click)="onSubmmit()">登録</button>
+</form>
