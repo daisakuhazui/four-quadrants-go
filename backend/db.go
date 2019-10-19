@@ -32,7 +32,7 @@ func InitDB() {
 }
 
 func OpenDB() (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", "./sqlite.db")
+	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	if err != nil {
 		log.Printf("Unexpected error occured during open database: %+v", err)
 		return nil, err
