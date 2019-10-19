@@ -9,10 +9,11 @@ func InitRoute(e *echo.Echo) {
 	// middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(middleware.CORS())
 
 	// routing
 	e.GET("/task/:id", handlerTaskGet)
-	e.POST("/task/:id", handlerTaskPost)
+	e.POST("/task", handlerTaskPost)
 	e.PUT("/task/:id", handlerTaskPut)
 	e.DELETE("/task/:id", handlerTaskDelete)
 

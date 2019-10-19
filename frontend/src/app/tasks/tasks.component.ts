@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import { Task } from '../models/task';
+import { HttpClient } from '@angular/common/http';
+import {HttpClientService } from '../service/http-client.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tasks',
@@ -8,12 +12,14 @@ import { FormGroup, FormControl } from '@angular/forms';
 })
 export class TasksComponent implements OnInit {
   newTaskForm: FormGroup;
-  taskName: string;
-  taskMemo: string;
-  taskQuadrant: string;
   quadrants: any;
+  task: Task;
 
-  constructor() { }
+  constructor(
+    private http: HttpClient,
+    private httpClientService: HttpClientService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.newTaskForm = new FormGroup({
@@ -26,12 +32,33 @@ export class TasksComponent implements OnInit {
 
   // 登録ボタン押下時の処理
   onSubmmit() {
-    this.taskName = this.newTaskForm.get('name').value;
-    this.taskMemo = this.newTaskForm.get('memo').value;
-    this.taskQuadrant = this.newTaskForm.get('quadrant').value;
+    // フォーム入力内容をマッピング
+    this.task = {
+      id: 0,
+      name: this.newTaskForm.get('name').value,
+      memo: this.newTaskForm.get('memo').value,
+      quadrant: this.newTaskForm.get('quadrant').value,
+      completeFlag: false,
+    };
 
-    console.log(this.taskName);
-    console.log(this.taskMemo);
-    console.log(this.taskQuadrant);
+    // ヘッダ情報
+    const requestUri = this.httpClientService.host + '/task';
+    this.httpClientService.httpOptions = this.httpClientService.httpOptions.headers.set('Access-Control-Allow-Origin', requestUri);
+
+    console.log(this.httpClientService.httpOptions.headers);
+
+    // API 実行
+    this.http.post(requestUri, this.task, this.httpClientService.httpOptions)
+      .subscribe(
+        (res) => {
+          // const response: any = res;
+          // return response;
+          this.router.navigate(['/']);
+        },
+        // TODO: エラーハンドリングを別途共通化して実装する
+        (error) => {
+          console.log(error);
+        }
+      );
   }
 }
