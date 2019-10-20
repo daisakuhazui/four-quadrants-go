@@ -27,7 +27,7 @@ export class TasksComponent implements OnInit {
       memo: new FormControl(),
       quadrant: new FormControl(),
     });
-    this.quadrants = ['第1象限', '第2象限', '第3象限', '第4象限'];
+    this.quadrants = ['必須', '必要', '錯覚', '無駄'];
   }
 
   // 登録ボタン押下時の処理
@@ -41,11 +41,11 @@ export class TasksComponent implements OnInit {
       completeFlag: false,
     };
 
-    // ヘッダ情報
+    console.log(this.task);
+
+    // ヘッダ情報セット
     const requestUri = this.httpClientService.host + '/task';
     this.httpClientService.httpOptions = this.httpClientService.httpOptions.headers.set('Access-Control-Allow-Origin', requestUri);
-
-    console.log(this.httpClientService.httpOptions.headers);
 
     // API 実行
     this.http.post(requestUri, this.task, this.httpClientService.httpOptions)
