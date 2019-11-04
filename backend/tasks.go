@@ -1,6 +1,7 @@
 package backend
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 	"time"
@@ -93,6 +94,69 @@ func handlerTaskPut(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"task": "put"})
 }
 
+func handlerTaskFinish(c echo.Context) error {
+	taskID := c.Param("id")
+
+	// open database
+	db, openErr := OpenDB()
+	if openErr != nil {
+		panic(openErr)
+	}
+
+	// TDOO: この処理は後々切り出せるはず
+	row := db.QueryRow(
+		`SELECT * FROM TASKS WHERE ID=?`,
+		taskID,
+	)
+
+	var task common.Task
+	err := row.Scan(
+		&task.ID,
+		&task.Name,
+		&task.Memo,
+		&task.Quadrant,
+		&task.CompleteFlag,
+		&task.CreatedAt,
+		&task.UpdatedAt,
+	)
+	if err == sql.ErrNoRows {
+		log.Printf("Task id:%v doesn't exist in datastore", taskID)
+		return c.JSON(http.StatusNotFound, nil)
+	} else if err != nil {
+		log.Fatalf("Unexpected error occurs during Task id:%v row.Scan(): %+v", taskID, err)
+		return c.JSON(http.StatusInternalServerError, nil)
+	}
+
+	if task.CompleteFlag {
+		log.Printf("Task id:%v has been already finished", task.ID)
+		return c.JSON(http.StatusConflict, nil)
+	} else {
+		task.CompleteFlag = true
+		if err := updateTask(task, db); err != nil {
+			return c.JSON(http.StatusInternalServerError, nil)
+		}
+	}
+
+	return c.JSON(http.StatusOK, task)
+}
+
 func handlerTaskDelete(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"task": "delete"})
+}
+
+func updateTask(task common.Task, db *sql.DB) error {
+	task.UpdatedAt = time.Now()
+	_, execErr := db.Exec(
+		`UPDATE TASKS NAME=? MEMO=? QUADRANT=? COMPLETEFLAG=? CREATEDAT=? UPDATEDAT=? WHERE ID=?`,
+		task.Name,
+		task.Memo,
+		task.Quadrant,
+		task.CompleteFlag,
+		task.CreatedAt,
+		task.UpdatedAt,
+	)
+	if execErr != nil {
+		return execErr
+	}
+	return nil
 }
