@@ -11,7 +11,7 @@ export class HttpClientService {
     // ヘッダ情報
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      // 'Access-Controle-Allow-Origin': 'http://localhost:8080'
+      'Access-Controle-Allow-Origin': 'http://localhost:8080'
     }),
     body: null,
   };
