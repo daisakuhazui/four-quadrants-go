@@ -11,8 +11,8 @@
   </div>
   <div>
     <label>象限</label>
-    <span *ngFor="let quadrant of quadrants">
-      <input type="radio" formControlName="quadrant" [value]="quadrant">{{quadrant}}
+    <span *ngFor="let quadrant of quadrants, index as i">
+      <input type="radio" formControlName="quadrant" [value]="i + 1">{{quadrant}}
     </span>
   </div>
   <button (click)="onSubmmit()">登録</button>

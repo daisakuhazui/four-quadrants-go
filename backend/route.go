@@ -13,6 +13,7 @@ func InitRoute(e *echo.Echo) {
 
 	// routing
 	e.GET("/task/:id", handlerTaskGet)
+	e.GET("/tasks", handlerAllTasksGet)
 	e.POST("/task", handlerTaskPost)
 	e.PUT("/task/:id", handlerTaskPut)
 	e.DELETE("/task/:id", handlerTaskDelete)

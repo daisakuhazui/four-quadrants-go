@@ -13,6 +13,43 @@ func handlerTaskGet(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"hello": "world"})
 }
 
+func handlerAllTasksGet(c echo.Context) error {
+	db, openErr := OpenDB()
+	if openErr != nil {
+		panic(openErr)
+	}
+
+	// TODO: ログインユーザーのタスクのみ取得されるようにする
+	rows, queryErr := db.Query(
+		`SELECT * FROM TASKS`,
+	)
+	if queryErr != nil {
+		log.Fatal("DBからの取得に失敗した")
+		panic(queryErr)
+	}
+	defer rows.Close()
+
+	var tasks []common.Task
+	for rows.Next() {
+		var task common.Task
+		if err := rows.Scan(
+			&task.ID,
+			&task.Name,
+			&task.Memo,
+			&task.Quadrant,
+			&task.CompleteFlag,
+			&task.CreatedAt,
+			&task.UpdatedAt,
+		); err != nil {
+			log.Fatalf("Unexpected error occurs during rows.Scan(): %+v", err)
+			return err
+		}
+		tasks = append(tasks, task)
+	}
+
+	return c.JSON(http.StatusOK, tasks)
+}
+
 func handlerTaskPost(c echo.Context) error {
 	// bind request
 	task := new(common.Task)
