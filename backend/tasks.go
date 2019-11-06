@@ -42,7 +42,7 @@ func handlerAllTasksGet(c echo.Context) error {
 			&task.CreatedAt,
 			&task.UpdatedAt,
 		); err != nil {
-			log.Fatalf("Unexpected error occurs during rows.Scan(): %+v", err)
+			log.Printf("Unexpected error occurs during rows.Scan(): %+v", err)
 			return err
 		}
 		tasks = append(tasks, task)
@@ -123,7 +123,7 @@ func handlerTaskFinish(c echo.Context) error {
 		log.Printf("Task id:%v doesn't exist in datastore", taskID)
 		return c.JSON(http.StatusNotFound, nil)
 	} else if err != nil {
-		log.Fatalf("Unexpected error occurs during Task id:%v row.Scan(): %+v", taskID, err)
+		log.Printf("Unexpected error occured during Task id:%v row.Scan(): ERROR %+v", taskID, err)
 		return c.JSON(http.StatusInternalServerError, nil)
 	}
 
@@ -133,6 +133,7 @@ func handlerTaskFinish(c echo.Context) error {
 	} else {
 		task.CompleteFlag = true
 		if err := updateTask(task, db); err != nil {
+			log.Printf("Unexpected error occured during updating Task id:%v: ERROR %+v", task.ID, err)
 			return c.JSON(http.StatusInternalServerError, nil)
 		}
 	}
