@@ -61,33 +61,13 @@ func handlerTaskPost(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	// open database
-	db, openErr := OpenDB()
-	if openErr != nil {
-		panic(openErr)
-	}
-
-	result, err := db.Exec(
-		`INSERT INTO TASKS (NAME, MEMO, QUADRANT, COMPLETEFLAG, CREATEDAT, UPDATEDAT) VALUES (?, ?, ?, ?, ?, ?)`,
-		task.Name,
-		task.Memo,
-		task.Quadrant,
-		task.CompleteFlag,
-		time.Now(),
-		time.Now(),
-	)
+	taskID, err := createTask(task)
 	if err != nil {
 		log.Printf("Could not insert task: %+v", err)
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 
-	lastInsertID, err := result.LastInsertId()
-	if err != nil {
-		log.Printf("Could not get lastInserID: %+v", err)
-		return c.JSON(http.StatusInternalServerError, err)
-	}
-
-	task.ID = lastInsertID
+	task.ID = taskID
 
 	return c.JSON(http.StatusOK, task)
 }
@@ -160,6 +140,31 @@ func selectTask(taskID string) (*common.Task, error) {
 	)
 
 	return task, err
+}
+
+func createTask(task *common.Task) (int64, error) {
+	// open database
+	db, openErr := OpenDB()
+	if openErr != nil {
+		panic(openErr)
+	}
+
+	result, err := db.Exec(
+		`INSERT INTO TASKS (NAME, MEMO, QUADRANT, COMPLETEFLAG, CREATEDAT, UPDATEDAT) VALUES (?, ?, ?, ?, ?, ?)`,
+		task.Name,
+		task.Memo,
+		task.Quadrant,
+		task.CompleteFlag,
+		time.Now(),
+		time.Now(),
+	)
+	taskID, err := result.LastInsertId()
+	if err != nil {
+		log.Printf("Could not get taskID: %+v", err)
+		return taskID, err
+	}
+
+	return taskID, nil
 }
 
 func updateTask(task *common.Task) error {
