@@ -16,6 +16,7 @@ func InitRoute(e *echo.Echo) {
 	e.GET("/tasks", handlerAllTasksGet)
 	e.POST("/task", handlerTaskPost)
 	e.PUT("/task/:id", handlerTaskPut)
+	e.PUT("/task/check/:id", handlerTaskCheck)
 	e.DELETE("/task/:id", handlerTaskDelete)
 
 	// start server 8080 port

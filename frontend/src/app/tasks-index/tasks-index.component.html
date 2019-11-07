@@ -1,30 +1,46 @@
 <ul>
   <li>
     <h2>必須</h2>
-    <p>重要だし緊急なものたち</p>
-    <span *ngFor="let task of resTasks">
-      <p *ngIf="task.quadrant==1">{{task.name}}</p>
-    </span>
+    <div>
+      <p>重要だし緊急なものたち</p>
+      <span *ngFor="let task of resTasks">
+        <p id={{task.id}} *ngIf="task.quadrant==1">
+          <button (click)=finishTask(task.id)>完了する</button>{{task.name}}
+        </p>
+      </span>
+    </div>
   </li>
   <li>
     <h2>必要</h2>
-    <p>重要だけれど緊急ではないものたち</p>
-    <span *ngFor="let task of resTasks">
-      <p *ngIf="task.quadrant==2">{{task.name}}</p>
-    </span>
+    <div>
+      <p>重要だけれど緊急ではないものたち</p>
+      <span *ngFor="let task of resTasks">
+        <p id={{task.id}} *ngIf="task.quadrant==2">
+          <button (click)=finishTask(task.id)>完了する</button>{{task.name}}
+        </p>
+      </span>
+    </div>
   </li>
   <li>
     <h2>錯覚</h2>
-    <p>重要ではないけれど緊急なものたち</p>
-    <span *ngFor="let task of resTasks">
-      <p *ngIf="task.quadrant==3">{{task.name}}</p>
-    </span>
+    <div>
+      <p>重要ではないけれど緊急なものたち</p>
+      <span *ngFor="let task of resTasks">
+        <p id={{task.id}} *ngIf="task.quadrant==3">
+          <button (click)=finishTask(task.id)>完了する</button>{{task.name}}
+        </p>
+      </span>
+    </div>
   </li>
   <li>
     <h2>無駄</h2>
-    <p>重要でもないし緊急でもない無駄なものたち</p>
-    <span *ngFor="let task of resTasks">
-      <p *ngIf="task.quadrant==4">{{task.name}}</p>
-    </span>
+    <div>
+      <p>重要でもないし緊急でもない無駄なものたち</p>
+      <span *ngFor="let task of resTasks">
+        <p id={{task.id}} *ngIf="task.quadrant==4">
+          <button (click)=finishTask(task.id)>完了する</button>{{task.name}}
+          </p>
+      </span>
+    </div>
   </li>
 </ul>

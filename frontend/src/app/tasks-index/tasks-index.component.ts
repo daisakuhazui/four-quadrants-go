@@ -10,6 +10,7 @@ import {HttpClientService } from '../service/http-client.service';
 })
 export class TasksIndexComponent implements OnInit {
   resTasks: Task[];
+  updatedTask: Task;
   firstQuadrantTasks: Task[];
   secondQuadrantTasks: Task[];
   thirdQuadrantTasks: Task[];
@@ -29,14 +30,30 @@ export class TasksIndexComponent implements OnInit {
   getTasks() {
     // ヘッダ情報セット
     const requestUri = this.httpClientService.host + '/tasks';
-    // this.httpClientService.httpOptions = this.httpClientService.httpOptions.set('Access-Control-Allow-Origin', requestUri);
-
     // API 実行
     this.http.get(requestUri, this.httpClientService.httpOptions)
       .toPromise()
       .then((res) => {
         const response: any = res;
         this.resTasks = response;
+      })
+      .catch(
+        // TODO: ここにエラーハンドリングを書く
+      );
+  }
+
+  // タスクを完了させる処理
+  finishTask(taskId: number) {
+    // ヘッダ情報セット
+    const requestUri = this.httpClientService.host + '/task/check/' + taskId.toString();
+    // API 実行
+    this.http.put(requestUri, this.httpClientService.httpOptions)
+      .toPromise()
+      .then((res) => {
+        const response: any = res;
+        this.updatedTask = response;
+        // TODO: 完了扱いのタスクは文字色が薄くなるようにスタイルをつける
+        return this.updatedTask;
       })
       .catch(
         // TODO: ここにエラーハンドリングを書く
