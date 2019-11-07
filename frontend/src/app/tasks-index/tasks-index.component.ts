@@ -15,6 +15,8 @@ export class TasksIndexComponent implements OnInit {
   secondQuadrantTasks: Task[];
   thirdQuadrantTasks: Task[];
   fourthQuadrantTasks: Task[];
+  isOpen: boolean;
+  focusTaskId: number;
 
   constructor(
     private http: HttpClient,
@@ -23,6 +25,8 @@ export class TasksIndexComponent implements OnInit {
 
   ngOnInit() {
     this.getTasks();
+    this.focusTaskId = 0;
+    this.isOpen = false;
   }
 
   // タスク一覧を取得する処理
@@ -42,8 +46,8 @@ export class TasksIndexComponent implements OnInit {
       );
   }
 
-  // タスクを完了させる処理
-  finishTask(taskId: number) {
+  // タスクを完了する処理
+  checkTask(taskId: number) {
     // ヘッダ情報セット
     const requestUri = this.httpClientService.host + '/task/check/' + taskId.toString();
     // API 実行
@@ -60,4 +64,29 @@ export class TasksIndexComponent implements OnInit {
       );
   }
 
+  // タスクを編集する処理
+  editTask(task: Task) {
+    this.focusTaskId = 0;
+    this.isOpen = false;
+
+    // ヘッダ情報セット
+    const requestUri = this.httpClientService.host + '/task/' + task.id.toString();
+    // API 実行
+    this.http.put(requestUri, task, this.httpClientService.httpOptions)
+      .toPromise()
+      .then((res) => {
+        const response: any = res;
+        this.updatedTask = response;
+        return this.updatedTask;
+      })
+      .catch(
+        // TODO: ここにエラーハンドリングを書く
+      );
+  }
+
+  // isOpen フラグを切り替える
+  swich(taskId: number) {
+    this.focusTaskId = taskId;
+    this.isOpen = true;
+  }
 }
