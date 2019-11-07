@@ -45,13 +45,14 @@ export class TasksIndexComponent implements OnInit {
   // タスクを完了させる処理
   finishTask(taskId: number) {
     // ヘッダ情報セット
-    const requestUri = this.httpClientService.host + '/task/finish/' + taskId.toString();
+    const requestUri = this.httpClientService.host + '/task/check/' + taskId.toString();
     // API 実行
     this.http.put(requestUri, this.httpClientService.httpOptions)
       .toPromise()
       .then((res) => {
         const response: any = res;
         this.updatedTask = response;
+        // TODO: 完了扱いのタスクは文字色が薄くなるようにスタイルをつける
         return this.updatedTask;
       })
       .catch(

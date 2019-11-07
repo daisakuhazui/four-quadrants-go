@@ -96,9 +96,36 @@ func handlerTaskPut(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"task": "put"})
 }
 
-func handlerTaskFinish(c echo.Context) error {
+func handlerTaskCheck(c echo.Context) error {
 	taskID := c.Param("id")
 
+	task, err := selectTask(taskID)
+	if err == sql.ErrNoRows {
+		log.Printf("Task id:%v doesn't exist in datastore", taskID)
+		return c.JSON(http.StatusNotFound, nil)
+	} else if err != nil {
+		log.Printf("Unexpected error occured during Task id:%v row.Scan(): ERROR %+v", taskID, err)
+		return c.JSON(http.StatusInternalServerError, nil)
+	}
+
+	if task.CompleteFlag {
+		task.CompleteFlag = false
+	} else {
+		task.CompleteFlag = true
+	}
+	if err := updateTask(task); err != nil {
+		log.Printf("Unexpected error occured during Task id:%v CompleteFlag turning %v: ERROR %+v", task.ID, task.CompleteFlag, err)
+		return c.JSON(http.StatusInternalServerError, nil)
+	}
+
+	return c.JSON(http.StatusOK, task)
+}
+
+func handlerTaskDelete(c echo.Context) error {
+	return c.JSON(http.StatusOK, map[string]string{"task": "delete"})
+}
+
+func selectTask(taskID string) (common.Task, error) {
 	// open database
 	db, openErr := OpenDB()
 	if openErr != nil {
@@ -121,33 +148,17 @@ func handlerTaskFinish(c echo.Context) error {
 		&task.CreatedAt,
 		&task.UpdatedAt,
 	)
-	if err == sql.ErrNoRows {
-		log.Printf("Task id:%v doesn't exist in datastore", taskID)
-		return c.JSON(http.StatusNotFound, nil)
-	} else if err != nil {
-		log.Printf("Unexpected error occured during Task id:%v row.Scan(): ERROR %+v", taskID, err)
-		return c.JSON(http.StatusInternalServerError, nil)
-	}
 
-	if task.CompleteFlag {
-		log.Printf("Task id:%v has been already finished", task.ID)
-		return c.JSON(http.StatusConflict, nil)
-	} else {
-		task.CompleteFlag = true
-		if err := updateTask(task, db); err != nil {
-			log.Printf("Unexpected error occured during updating Task id:%v: ERROR %+v", task.ID, err)
-			return c.JSON(http.StatusInternalServerError, nil)
-		}
-	}
-
-	return c.JSON(http.StatusOK, task)
+	return task, err
 }
 
-func handlerTaskDelete(c echo.Context) error {
-	return c.JSON(http.StatusOK, map[string]string{"task": "delete"})
-}
+func updateTask(task common.Task) error {
+	// open database
+	db, openErr := OpenDB()
+	if openErr != nil {
+		panic(openErr)
+	}
 
-func updateTask(task common.Task, db *sql.DB) error {
 	task.UpdatedAt = time.Now()
 	_, execErr := db.Exec(
 		`UPDATE TASKS SET NAME=?, MEMO=?, QUADRANT=?, COMPLETEFLAG=?, CREATEDAT=?, UPDATEDAT=? WHERE ID=?`,
