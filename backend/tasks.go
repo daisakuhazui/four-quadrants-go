@@ -45,7 +45,9 @@ func handlerAllTasksGet(c echo.Context) error {
 			log.Printf("Unexpected error occurs during rows.Scan(): %+v", err)
 			return err
 		}
-		tasks = append(tasks, task)
+		if !task.CompleteFlag {
+			tasks = append(tasks, task)
+		}
 	}
 
 	return c.JSON(http.StatusOK, tasks)
@@ -148,13 +150,14 @@ func handlerTaskDelete(c echo.Context) error {
 func updateTask(task common.Task, db *sql.DB) error {
 	task.UpdatedAt = time.Now()
 	_, execErr := db.Exec(
-		`UPDATE TASKS NAME=? MEMO=? QUADRANT=? COMPLETEFLAG=? CREATEDAT=? UPDATEDAT=? WHERE ID=?`,
+		`UPDATE TASKS SET NAME=?, MEMO=?, QUADRANT=?, COMPLETEFLAG=?, CREATEDAT=?, UPDATEDAT=? WHERE ID=?`,
 		task.Name,
 		task.Memo,
 		task.Quadrant,
 		task.CompleteFlag,
 		task.CreatedAt,
 		task.UpdatedAt,
+		task.ID,
 	)
 	if execErr != nil {
 		return execErr
