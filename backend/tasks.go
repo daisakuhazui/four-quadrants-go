@@ -93,6 +93,16 @@ func handlerTaskPost(c echo.Context) error {
 }
 
 func handlerTaskPut(c echo.Context) error {
+	task := new(common.Task)
+	if err := c.Bind(task); err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	if err := updateTask(task); err != nil {
+		log.Printf("Unexpected error occured during Task id:%v updating: ERROR %+v", task.ID, err)
+		return c.JSON(http.StatusInternalServerError, nil)
+	}
+
 	return c.JSON(http.StatusOK, map[string]string{"task": "put"})
 }
 
@@ -125,7 +135,7 @@ func handlerTaskDelete(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"task": "delete"})
 }
 
-func selectTask(taskID string) (common.Task, error) {
+func selectTask(taskID string) (*common.Task, error) {
 	// open database
 	db, openErr := OpenDB()
 	if openErr != nil {
@@ -138,7 +148,7 @@ func selectTask(taskID string) (common.Task, error) {
 		taskID,
 	)
 
-	var task common.Task
+	var task *common.Task
 	err := row.Scan(
 		&task.ID,
 		&task.Name,
@@ -152,7 +162,7 @@ func selectTask(taskID string) (common.Task, error) {
 	return task, err
 }
 
-func updateTask(task common.Task) error {
+func updateTask(task *common.Task) error {
 	// open database
 	db, openErr := OpenDB()
 	if openErr != nil {
