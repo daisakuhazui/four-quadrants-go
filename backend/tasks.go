@@ -25,7 +25,7 @@ func handlerAllTasksGet(c echo.Context) error {
 		`SELECT * FROM TASKS`,
 	)
 	if queryErr != nil {
-		log.Fatal("DBからの取得に失敗した")
+		log.Printf("Failed to get All Tasks from datastore: %+v", queryErr)
 		panic(queryErr)
 	}
 	defer rows.Close()
@@ -45,6 +45,7 @@ func handlerAllTasksGet(c echo.Context) error {
 			log.Printf("Unexpected error occurs during rows.Scan(): %+v", err)
 			return err
 		}
+		// TODO: フロント側で「完了済みのタスクを表示させる」機能を実装したら下記を改修する
 		if !task.CompleteFlag {
 			tasks = append(tasks, task)
 		}
@@ -103,7 +104,7 @@ func handlerTaskCheck(c echo.Context) error {
 	} else {
 		task.CompleteFlag = true
 	}
-	if err := updateTask(task); err != nil {
+	if err := updateTask(&task); err != nil {
 		log.Printf("Unexpected error occured during Task id:%v CompleteFlag turning %v: ERROR %+v", task.ID, task.CompleteFlag, err)
 		return c.JSON(http.StatusInternalServerError, nil)
 	}
@@ -115,7 +116,7 @@ func handlerTaskDelete(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"task": "delete"})
 }
 
-func selectTask(taskID string) (*common.Task, error) {
+func selectTask(taskID string) (common.Task, error) {
 	// open database
 	db, openErr := OpenDB()
 	if openErr != nil {
@@ -128,8 +129,8 @@ func selectTask(taskID string) (*common.Task, error) {
 		taskID,
 	)
 
-	var task *common.Task
-	err := row.Scan(
+	var task common.Task
+	if err := row.Scan(
 		&task.ID,
 		&task.Name,
 		&task.Memo,
@@ -137,9 +138,12 @@ func selectTask(taskID string) (*common.Task, error) {
 		&task.CompleteFlag,
 		&task.CreatedAt,
 		&task.UpdatedAt,
-	)
+	); err != nil {
+		log.Printf("Unexpected error occured during select Task id: %v: ERROR %+v", taskID, err)
+		panic(err)
+	}
 
-	return task, err
+	return task, nil
 }
 
 func createTask(task *common.Task) (int64, error) {

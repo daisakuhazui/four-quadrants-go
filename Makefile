@@ -2,7 +2,7 @@ serve:
 	go run main.go
 
 test:
-	go test -cover
+	go test ./backend -cover
 
 cover:
 	go test -coverprofile cover.out
