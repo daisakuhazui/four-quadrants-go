@@ -4,7 +4,7 @@
     <div>
       <p>重要だし緊急なものたち</p>
       <span *ngFor="let task of resTasks">
-        <div id={{task.id}} *ngIf="task.quadrant==1">
+        <div id={{task.id}} *ngIf="task.quadrant==1&&!task.completeFlag">
           <button (click)="checkTask(task.id)">完了する</button>
           <input type="text" [(ngModel)]="task.name" *ngIf="isOpen && focusTaskId==task.id" (blur)="editTask(task)">
           <p *ngIf="focusTaskId!=task.id" (click)="swich(task.id)">{{task.name}}</p>

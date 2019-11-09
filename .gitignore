@@ -22,3 +22,7 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# testing
+cover.out
+test.db

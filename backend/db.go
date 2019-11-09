@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
+	"os"
 )
 
 func InitDB() {
@@ -32,7 +33,13 @@ func InitDB() {
 }
 
 func OpenDB() (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", "./sqlite3.db")
+	var dbFile string
+	if os.Getenv("RUNNING_ENV") != "TEST" {
+		dbFile = "./sqlite3.db"
+	} else {
+		dbFile = "./test.db"
+	}
+	db, err := sql.Open("sqlite3", dbFile)
 	if err != nil {
 		log.Printf("Unexpected error occured during open database: %+v", err)
 		return nil, err
