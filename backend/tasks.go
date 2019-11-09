@@ -59,7 +59,7 @@ func handlerTaskPost(c echo.Context) error {
 	task := new(common.Task)
 	if err := c.Bind(task); err != nil {
 		log.Printf("Bad request: %+v", err)
-		return c.JSON(http.StatusBadRequest, err)
+		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
 	taskID, err := createTask(task)
@@ -70,21 +70,21 @@ func handlerTaskPost(c echo.Context) error {
 
 	task.ID = taskID
 
-	return c.JSON(http.StatusOK, task)
+	return c.JSON(http.StatusCreated, task)
 }
 
 func handlerTaskPut(c echo.Context) error {
 	task := new(common.Task)
 	if err := c.Bind(task); err != nil {
-		return c.JSON(http.StatusBadRequest, err)
+		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
 	if err := updateTask(task); err != nil {
 		log.Printf("Unexpected error occured during Task id:%v updating: ERROR %+v", task.ID, err)
-		return c.JSON(http.StatusInternalServerError, nil)
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
-	return c.JSON(http.StatusOK, map[string]string{"task": "put"})
+	return c.JSON(http.StatusOK, task)
 }
 
 func handlerTaskCheck(c echo.Context) error {
@@ -93,10 +93,10 @@ func handlerTaskCheck(c echo.Context) error {
 	task, err := selectTask(taskID)
 	if err == sql.ErrNoRows {
 		log.Printf("Task id:%v doesn't exist in datastore", taskID)
-		return c.JSON(http.StatusNotFound, nil)
+		return echo.NewHTTPError(http.StatusNotFound, err)
 	} else if err != nil {
 		log.Printf("Unexpected error occured during Task id:%v row.Scan(): ERROR %+v", taskID, err)
-		return c.JSON(http.StatusInternalServerError, nil)
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
 	if task.CompleteFlag {
@@ -106,7 +106,7 @@ func handlerTaskCheck(c echo.Context) error {
 	}
 	if err := updateTask(&task); err != nil {
 		log.Printf("Unexpected error occured during Task id:%v CompleteFlag turning %v: ERROR %+v", task.ID, task.CompleteFlag, err)
-		return c.JSON(http.StatusInternalServerError, nil)
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
 	return c.JSON(http.StatusOK, task)
@@ -140,7 +140,7 @@ func selectTask(taskID string) (common.Task, error) {
 		&task.UpdatedAt,
 	); err != nil {
 		log.Printf("Unexpected error occured during select Task id: %v: ERROR %+v", taskID, err)
-		panic(err)
+		return task, err
 	}
 
 	return task, nil
