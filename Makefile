@@ -1,4 +1,10 @@
-serve:
+open:
+	cd frontend && ng serve --open
+
+serve_frontend:
+	cd frontend && ng serve
+
+serve_backend:
 	go run main.go
 
 test:
