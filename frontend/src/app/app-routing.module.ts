@@ -5,6 +5,7 @@ import { TasksIndexComponent } from './tasks-index/tasks-index.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { UserAttendanceComponent } from './components/user-attendance/user-attendance.component';
 import { CallbackComponent } from './components/auth/callback/callback.component';
+import { AuthGuard } from './domains/guard/auth.guard';
 
 const routes: Routes = [
   {
@@ -22,7 +23,8 @@ const routes: Routes = [
   },
   {
     path: 'user-attendance',
-    component: UserAttendanceComponent
+    component: UserAttendanceComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'callback',
