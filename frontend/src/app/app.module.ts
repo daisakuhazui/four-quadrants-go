@@ -20,6 +20,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { CallbackComponent } from './components/auth/callback/callback.component';
+import { TopComponent } from './top/top.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { CallbackComponent } from './components/auth/callback/callback.component
     TasksComponent,
     UserAttendanceComponent,
     NavbarComponent,
-    CallbackComponent
+    CallbackComponent,
+    TopComponent
   ],
   imports: [
     BrowserModule,

@@ -60,7 +60,7 @@ export class AuthUseCaseService {
     });
   }
 
-  login(redirectPath: string = '/') {
+  login(redirectPath: string = '/index') {
     this.auth0Client$.subscribe((client: Auth0Client) => {
       console.log(client);
       client.loginWithRedirect({
