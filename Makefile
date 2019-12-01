@@ -1,5 +1,5 @@
 open:
-	cd frontend && ng serve --open
+	cd frontend && ng serve --open --ssl
 
 serve_frontend:
 	cd frontend && ng serve

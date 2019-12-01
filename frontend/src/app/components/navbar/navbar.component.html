@@ -1,0 +1,15 @@
+<button mat-button [matMenuTriggerFor]="menu">
+  <span class="mat-body-2">{{displayUserName}}様</span>
+  <mat-icon>expand_more</mat-icon>
+  <mat-icon class="user-icon">supervised_user_circle</mat-icon>
+</button>
+<mat-menu #menu="matMenu">
+  <button *ngIf="!auth.loggedIn" mat-menu-item (click)="auth.login()">
+    <mat-icon>supervisor_account</mat-icon>
+    <span>ログイン</span>
+  </button>
+  <button *ngIf="auth.loggedIn" mat-menu-item (click)="auth.logout()">
+    <mat-icon>exit_to_app</mat-icon>
+    <span>ログアウト</span>
+  </button>
+</mat-menu>
