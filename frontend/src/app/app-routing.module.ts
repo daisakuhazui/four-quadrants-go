@@ -14,12 +14,14 @@ const routes: Routes = [
   //   pathMatch: 'full'
   // },
   {
-    path: '',
-    component: TasksIndexComponent
+    path: 'index',
+    component: TasksIndexComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'tasks',
-    component: TasksComponent
+    component: TasksComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'user-attendance',
