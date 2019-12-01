@@ -6,7 +6,7 @@ export const environment = {
   },
 
   auth0: {
-    domain: 'localhost:4200',
-    clientId: '114501222223-qj2212966osop581sreotntp1hudth2n.apps.googleusercontent.com',
+    domain: 'four-quadrants-go.au.auth0.com',
+    clientId: 'xnhv3iFLKy0J853BBqZ6LIgzV2qlfxaQ',
   }
 };

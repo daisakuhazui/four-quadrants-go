@@ -74,7 +74,7 @@ export class AuthUseCaseService {
     let targetRoute: string;
     const authComplete$ = this.handleRedirectCallback$.pipe(
       tap(cbRes => {
-        targetRoute = cbRes.appState && cbRes.appState.target ? cbRes.appState.target : '/';
+        targetRoute = cbRes.appState && cbRes.appState.target ? cbRes.appState.target : '/index';
       }),
       concatMap(() => {
         return combineLatest(
