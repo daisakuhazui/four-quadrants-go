@@ -9,7 +9,7 @@ import { AuthUseCaseService } from './domains/auth/auth-use-case.service';
 export class AppComponent implements OnInit {
   title = 'Four Quadrants Go';
 
-  constructor(private auth: AuthUseCaseService) {
+  constructor(public auth: AuthUseCaseService) {
   }
 
   ngOnInit(): void {

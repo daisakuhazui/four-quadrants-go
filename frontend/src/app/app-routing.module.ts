@@ -8,13 +8,13 @@ import { CallbackComponent } from './components/auth/callback/callback.component
 import { AuthGuard } from './domains/guard/auth.guard';
 
 const routes: Routes = [
+  // {
+  //   path: '',
+  //   redirectTo: 'user-attendance',
+  //   pathMatch: 'full'
+  // },
   {
     path: '',
-    redirectTo: 'user-attendance',
-    pathMatch: 'full'
-  },
-  {
-    path: 'index',
     component: TasksIndexComponent
   },
   {

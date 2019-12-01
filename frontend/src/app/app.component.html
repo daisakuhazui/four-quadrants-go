@@ -2,6 +2,8 @@
 <ul>
   <li><a routerLink="./">TOP</a></li>
   <li><a routerLink="./tasks">新規タスク</a></li>
+  <li *ngIf="!auth.loggedIn" (click)="auth.login()">ログイン</li>
+  <li *ngIf="auth.loggedIn" (click)="auth.logout()">ログアウト</li>
 </ul>
 <div>
   <router-outlet></router-outlet>
