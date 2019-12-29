@@ -3,7 +3,7 @@
 
 ## 開発環境
 ### Backend
-go1.11 darwin/amd64
+go1.13
 ### Frontend
 Angular CLI: 8.0.6
 ### Datasstore
