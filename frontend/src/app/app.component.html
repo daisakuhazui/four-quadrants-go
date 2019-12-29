@@ -1,6 +1,7 @@
 <h1>四象限</h1>
 <ul>
   <li><a routerLink="./">TOP</a></li>
+  <li *ngIf="auth.loggedIn"><a routerLink="./index">タスク一覧</a></li>
   <li *ngIf="auth.loggedIn"><a routerLink="./tasks">新規タスク</a></li>
   <li *ngIf="!auth.loggedIn" (click)="auth.login()">ログイン</li>
   <li *ngIf="auth.loggedIn" (click)="auth.logout()">ログアウト</li>

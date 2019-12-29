@@ -2,7 +2,7 @@ open:
 	cd frontend && ng serve --open --ssl
 
 serve_frontend:
-	cd frontend && ng serve
+	cd frontend && ng serve --ssl
 
 serve_backend:
 	go run main.go
